@@ -1,0 +1,32 @@
+{
+	"name": "DS_ADLSGen2_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Gen2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_para_sinkfn": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().ds_para_sinkfn",
+					"type": "Expression"
+				},
+				"fileSystem": "naveencloud"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

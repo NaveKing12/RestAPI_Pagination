@@ -1,0 +1,176 @@
+{
+	"name": "PL_RestAPI_pagination_Load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(int(variables('currentpage')),0)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_Rest_Source",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_para_pagenum": {
+											"value": "@variables('currentpage')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADLSGen2_Sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_para_sinkfn": {
+											"value": "@variables('currentpage')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(int(variables('currentpage')),int(variables('finalpage')))\n\n",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "SetVariable_temp",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "temp",
+											"value": {
+												"value": "@string(add(int(variables('currentpage')),1))\n",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Set variable_Current",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "SetVariable_temp",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "currentpage",
+											"value": {
+												"value": "@variables('temp')",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Set variable1",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "currentpage",
+											"value": "0"
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			}
+		],
+		"variables": {
+			"currentpage": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"temp": {
+				"type": "String"
+			},
+			"finalpage": {
+				"type": "String",
+				"defaultValue": "10"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2026-07-21T07:00:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

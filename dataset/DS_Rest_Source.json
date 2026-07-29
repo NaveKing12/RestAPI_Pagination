@@ -1,0 +1,24 @@
+{
+	"name": "DS_Rest_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Rest_Api",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"ds_para_pagenum": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().ds_para_pagenum",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

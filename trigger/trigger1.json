@@ -1,0 +1,35 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_RestAPI_pagination_Load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2026-07-21T12:35:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						36
+					],
+					"hours": [
+						12
+					],
+					"monthDays": [
+						21
+					]
+				}
+			}
+		}
+	}
+}
